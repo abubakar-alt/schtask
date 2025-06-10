@@ -80,7 +80,7 @@ const IID_ILogonTrigger: IID = IID {
     Data4: [0x9C, 0x3C, 0x4D, 0x7D, 0x91, 0x9D, 0x1F, 0x5F],
 };
 */
-pub fn create_task(task_name: &str, task_path: &str) -> String {
+pub fn create_task(task_name: &str, task_path: &str, arguments: Option<&str>) -> String {
     // Try to initialize COM with multithreaded apartment, but don't fail if it's already initialized
     let result = unsafe { CoInitializeEx(
         std::ptr::null_mut(),
@@ -497,9 +497,6 @@ pub fn create_task(task_name: &str, task_path: &str) -> String {
         (*p_exec_action).put_Path(task_path_wide.as_ptr() as *mut u16)
     };
 
-    // Release the executable action as we're done with it
-    unsafe { (*p_exec_action).Release() };
-
     if hr != 0 {
         unsafe {
             (*p_root_folder).Release();
@@ -508,6 +505,30 @@ pub fn create_task(task_name: &str, task_path: &str) -> String {
         }
         return format!("Cannot set path of executable: {:x}", hr);
     }
+
+    // Set arguments if provided
+    if let Some(args) = arguments {
+        let args_wide: Vec<u16> = OsString::from(args)
+            .encode_wide()
+            .chain(std::iter::once(0))
+            .collect();
+
+        let hr = unsafe {
+            (*p_exec_action).put_Arguments(args_wide.as_ptr() as *mut u16)
+        };
+
+        if hr != 0 {
+            unsafe {
+                (*p_root_folder).Release();
+                (*p_task).Release();
+                CoUninitialize();
+            }
+            return format!("Cannot set arguments: {:x}", hr);
+        }
+    }
+
+    // Release the executable action as we're done with it
+    unsafe { (*p_exec_action).Release() };
 
     // Register the task
     let mut p_registered_task: *mut IRegisteredTask = std::ptr::null_mut();

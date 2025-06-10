@@ -5,6 +5,7 @@ This project is a Rust implementation of the Windows Task Scheduler functionalit
 ## Features
 
 - Create scheduled tasks that run when a user logs on
+- Support for command-line arguments when running tasks
 - Dynamically find Task Scheduler GUIDs from the Windows Registry
 - Support for custom executable paths
 - Automatic cleanup of existing tasks with the same name
@@ -33,7 +34,15 @@ use schtask::create_task;
 
 fn main() {
     // Create a task that runs notepad.exe when the user logs on
-    let result = create_task("MyTask", "C:\\Windows\\System32\\notepad.exe");
+    let result = create_task("MyTask", "C:\\Windows\\System32\\notepad.exe", None);
+    println!("{}", result);
+
+    // Create a task with command-line arguments
+    let result = create_task(
+        "MyTaskWithArgs",
+        "C:\\Windows\\System32\\notepad.exe",
+        Some("C:\\Windows\\System32\\drivers\\etc\\hosts")
+    );
     println!("{}", result);
 }
 ```
@@ -47,7 +56,7 @@ The implementation follows the Windows Task Scheduler COM interface pattern:
 4. Create a new task definition
 5. Configure task settings and registration info
 6. Add a logon trigger
-7. Set up the executable action
+7. Set up the executable action with optional arguments
 8. Register the task
 
 ## Security Considerations
