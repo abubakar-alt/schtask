@@ -23,7 +23,7 @@ Add the following to your Cargo.toml
 
 ```rust
 [dependencies]
-noldr = { git = "https://github.com/Teach2Breach/schtask.git", branch = "main" }
+schtask = { git = "https://github.com/Teach2Breach/schtask.git", branch = "main" }
 ```
 
 Use in your project:
