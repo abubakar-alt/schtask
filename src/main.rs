@@ -1,8 +1,3 @@
-#[macro_use]
-extern crate litcrypt;
-
-use_litcrypt!("ageofmachine");
-
 use schtask::create_task;
 
 fn main() {

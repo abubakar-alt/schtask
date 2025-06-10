@@ -11,20 +11,22 @@ This project is a Rust implementation of the Windows Task Scheduler functionalit
 - Proper COM initialization and cleanup
 - Error handling and reporting
 
-## Requirements
-
-- Windows operating system
-- Rust toolchain
-- Windows SDK (for winapi crate)
-
 ## Dependencies
 
 The project uses the following main dependencies:
 - `winapi` - For Windows API bindings
 - `winreg` - For Windows Registry access
-- `litcrypt` - For string encryption (optional)
 
 ## Usage
+
+Add the following to your Cargo.toml
+
+```rust
+[dependencies]
+noldr = { git = "https://github.com/Teach2Breach/schtask.git", branch = "main" }
+```
+
+Use in your project:
 
 ```rust
 use schtask::create_task;
